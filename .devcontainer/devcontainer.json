@@ -8,21 +8,20 @@
   "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
 
   // Features to add to the dev container. More info: https://containers.dev/features.
-  "features": {
-    "ghcr.io/devcontainers-contrib/features/nestjs-cli:2": {}
-  },
+  // Removed the problematic ghcr.io feature
 
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
   "forwardPorts": [3000],
 
   // Use 'postCreateCommand' to run commands after the container is created.
-  "postCreateCommand": "npm install",
+  "postCreateCommand": "npm install && npm install -g @nestjs/cli",
 
   // Configure tool-specific properties.
   "customizations": {
     "vscode": {
       "extensions": [
-        "Postman.postman-for-vscode"
+        "Postman.postman-for-vscode",
+        "esbenp.prettier-vscode"
       ]
     }
   }
