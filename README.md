@@ -1,49 +1,72 @@
-# nextjs-interview / TodoApi
+# TodoApi (NestJS)
 
-[![Open in Coder](https://dev.crunchloop.io/open-in-coder.svg)](https://dev.crunchloop.io/templates/fly-containers/workspace?param.Git%20Repository=git@github.com:crunchloop/nextjs-interview.git)
+A simple, modular Todo List REST API built with NestJS and TypeScript.
 
-This is a simple Todo List API built in Nest JS and Typescript. This project is currently being used for Javascript/Typescript full-stack candidates.
+## Features
+
+- CRUD operations for Todo Lists and Todo List Items
+- RESTful endpoints with error handling (404s, etc.)
+- Modular service/controller structure
+- In-memory data storage (no database)
+- Unit tests for core logic
+
+## Project Structure
+
+```
+src/
+  app.module.ts
+  main.ts
+  interfaces/                # TypeScript interfaces for entities
+  todo_lists/
+    dtos/                    # Data Transfer Objects for validation
+    todo_lists.controller.ts
+    todo_lists.service.ts
+    todo_lists.module.ts
+    todo_lists_item/
+      dtos/
+      todo_lists_items.controller.ts
+      todo_lists_items.service.ts
+      todo_lists_items.module.ts
+test/
+  todo_lists.e2e-spec.ts     # (template for e2e, not implemented)
+```
 
 ## Installation
 
 ```bash
-$ npm install
+npm install
 ```
 
-## Running the app
+## Running the App
 
 ```bash
-# development
-$ npm run start
+# Development
+npm run start:dev
 
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+# Production
+npm run start:prod
 ```
 
-## Test
+The API will be available at `http://localhost:3000`.
+
+## API Endpoints
+
+- `GET    /api/todolists` — List all todo lists
+- `POST   /api/todolists` — Create a new todo list
+- `GET    /api/todolists/:todoListId` — Get a specific todo list
+- `PUT    /api/todolists/:todoListId` — Update a todo list
+- `DELETE /api/todolists/:todoListId` — Delete a todo list (and all its items)
+
+- `GET    /api/todolists/:todoListId/items` — List items in a list
+- `POST   /api/todolists/:todoListId/items` — Add an item to a list
+- `GET    /api/todolists/:todoListId/items/:todoListItemId` — Get a specific item
+- `PUT    /api/todolists/:todoListId/items/:todoListItemId` — Update an item
+- `DELETE /api/todolists/:todoListId/items/:todoListItemId` — Delete an item
+- `DELETE /api/todolists/:todoListId/items` — Delete all items in a list
+
+## Testing
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+# Unit tests
+npm run test
 ```
-
-Check integration tests at: (https://github.com/crunchloop/interview-tests)
-
-## Contact
-
-- Martín Fernández (mfernandez@crunchloop.io)
-
-## About Crunchloop
-
-![crunchloop](https://s3.amazonaws.com/crunchloop.io/logo-blue.png)
-
-We strongly believe in giving back :rocket:. Let's work together [`Get in touch`](https://crunchloop.io/#contact).
