@@ -1,14 +1,26 @@
-import { Injectable } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  Inject,
+  forwardRef,
+} from '@nestjs/common';
 import { CreateTodoListDto } from './dtos/create-todo_list';
 import { UpdateTodoListDto } from './dtos/update-todo_list';
 import { TodoList } from '../interfaces/todo_list.interface';
+import { TodoListItemsService } from './todo_lists_item/todo_lists_items.service';
 
 @Injectable()
 export class TodoListsService {
   private readonly todolists: TodoList[];
+  private readonly todoListItemsService?: TodoListItemsService;
 
-  constructor(todoLists: TodoList[] = []) {
+  constructor(
+    todoLists: TodoList[] = [],
+    @Inject(forwardRef(() => TodoListItemsService))
+    todoListItemsService?: TodoListItemsService,
+  ) {
     this.todolists = todoLists;
+    this.todoListItemsService = todoListItemsService;
   }
 
   all(): TodoList[] {
@@ -16,7 +28,7 @@ export class TodoListsService {
   }
 
   get(id: number): TodoList {
-    return this.todolists.find((x) => x.id === Number(id));
+    return this.validateTodoListExists(id);
   }
 
   create(dto: CreateTodoListDto): TodoList {
@@ -31,7 +43,7 @@ export class TodoListsService {
   }
 
   update(id: number, dto: UpdateTodoListDto): TodoList {
-    const todolist = this.todolists.find((x) => x.id == Number(id));
+    const todolist = this.validateTodoListExists(id);
 
     // Update the record
     todolist.name = dto.name;
@@ -40,19 +52,26 @@ export class TodoListsService {
   }
 
   delete(id: number): void {
-    const index = this.todolists.findIndex((x) => x.id == Number(id));
-
+    this.validateTodoListExists(id);
+    if (this.todoListItemsService) {
+      this.todoListItemsService.deleteAllFromList(id);
+    }
+    const index = this.todolists.findIndex((x) => x.id === id);
     if (index > -1) {
       this.todolists.splice(index, 1);
     }
   }
 
   private nextId(): number {
-    const last = this.todolists
-      .map((x) => x.id)
-      .sort()
-      .reverse()[0];
-
+    const last = this.todolists.map((x) => x.id).sort((a, b) => b - a)[0];
     return last ? last + 1 : 1;
+  }
+
+  private validateTodoListExists(id: number): TodoList {
+    const list = this.todolists.find((list) => list.id === id);
+    if (!list) {
+      throw new NotFoundException(`TodoList with id ${id} not found`);
+    }
+    return list;
   }
 }
